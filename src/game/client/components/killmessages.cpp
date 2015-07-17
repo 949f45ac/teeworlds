@@ -112,7 +112,12 @@ void CKillMessages::OnRender()
 				if(m_aKillmsgs[r].m_ModeSpecial&2)
 				{
 					Graphics()->BlendNormal();
-					Graphics()->TextureSet(g_pData->m_aImages[IMAGE_GAME].m_Id);
+					
+					if(m_aKillmsgs[r].m_Weapon > WEAPON_RIFLE && m_aKillmsgs[r].m_Weapon != WEAPON_NINJA)
+						Graphics()->TextureSet(g_pData->m_aImages[IMAGE_EGAME].m_Id);
+					else
+						Graphics()->TextureSet(g_pData->m_aImages[IMAGE_GAME].m_Id);
+						
 					Graphics()->QuadsBegin();
 
 					if(m_aKillmsgs[r].m_KillerTeam == TEAM_RED)

@@ -103,7 +103,11 @@ void CItems::RenderProjectile(const CNetObj_Projectile *pCurrent, int ItemID)
 
 void CItems::RenderPickup(const CNetObj_Pickup *pPrev, const CNetObj_Pickup *pCurrent)
 {
-	Graphics()->TextureSet(g_pData->m_aImages[IMAGE_GAME].m_Id);
+	if (pCurrent->m_Subtype == WEAPON_SHAFT)
+		Graphics()->TextureSet(g_pData->m_aImages[IMAGE_EGAME].m_Id);
+	else
+		Graphics()->TextureSet(g_pData->m_aImages[IMAGE_GAME].m_Id);
+	
 	Graphics()->QuadsBegin();
 	vec2 Pos = mix(vec2(pPrev->m_X, pPrev->m_Y), vec2(pCurrent->m_X, pCurrent->m_Y), Client()->IntraGameTick());
 	float Angle = 0.0f;
@@ -262,6 +266,106 @@ void CItems::RenderLaser(const struct CNetObj_Laser *pCurrent)
 	Graphics()->BlendNormal();
 }
 
+void CItems::RenderBeam(const struct CNetObj_Beam *current) {
+	vec2 Pos = vec2(current->m_X, current->m_Y);
+	vec2 From = vec2(current->m_FromX, current->m_FromY);
+	vec2 Dir = normalize(Pos - From);
+	float dist = length(Pos - From);
+	
+	// beam is from local player? use local (more precise) coords then
+	if (current->m_Owner == m_pClient->m_Snap.m_LocalClientID) {
+		From = m_pClient->m_LocalCharacterPos;
+		// get the intersecting position TODO: get this from the /server/character's activesparkle somehow...
+		//pos = (from + normalize(pos-from)*tuning.shaft_range);
+		//col_intersect_line(from, pos, &pos, 0x0);
+		//Pos = m_pClient->m_pControls->m_MousePos;
+		// approximate by length of ray from "unprecise" ray
+		Dir = normalize(Pos - From);
+		Pos = From + (Dir*dist);
+		dist = length(Pos - From);
+	}
+
+	vec2 out, border;
+
+	
+	// render inner beam
+	Graphics()->BlendNormal();		
+	Graphics()->TextureSet(-1);
+
+	Graphics()->QuadsBegin();		
+	// do outline
+	Graphics()->SetColor(1.0,1.0,0.8,1.0f);
+	out = vec2(Dir.y, -Dir.x) * 3;
+
+	IGraphics::CFreeformItem CFreeformItem(
+		From.x-out.x, From.y-out.y,
+		From.x+out.x, From.y+out.y,
+		Pos.x-out.x, Pos.y-out.y,
+		Pos.x+out.x, Pos.y+out.y
+	);		
+	Graphics()->QuadsDrawFreeform(
+			&CFreeformItem,
+			1
+		);
+		
+	Graphics()->QuadsEnd();
+
+
+	// render sprites
+	Graphics()->BlendAdditive();		
+	Graphics()->TextureSet(g_pData->m_aImages[IMAGE_EGAME].m_Id);		
+	
+	Graphics()->QuadsBegin();		
+	RenderTools()->SelectSprite(SPRITE_SHAFT_BEAM1);
+	Graphics()->SetColor(1.0,1.0,0.8,1.0f);
+
+	Graphics()->QuadsSetRotation(GetAngle(Dir));
+
+	float size = 15;
+	float offset = 40;
+	float move = offset - dist/2;
+	
+	int ClientTick = Client()->GameTick();
+	
+	IGraphics::CQuadItem CQuadItem(
+		Pos.x+Dir.x*move,
+		Pos.y+Dir.y*move,
+		dist - offset/2,
+		2*size + 10 * cos((float) ClientTick)
+	);
+	Graphics()->QuadsDraw(
+		&CQuadItem,
+		1
+	);			
+	Graphics()->QuadsEnd();
+	
+	// render head
+	{
+		Graphics()->BlendAdditive();
+		Graphics()->TextureSet(g_pData->m_aImages[IMAGE_EGAME].m_Id);
+		Graphics()->QuadsBegin();
+
+		Graphics()->SetColor(1.0,1.0,1.0,0.3f);
+		int sprites[] = {SPRITE_SHAFT_END1, SPRITE_SHAFT_END2, SPRITE_SHAFT_END3};
+		RenderTools()->SelectSprite(sprites[ClientTick%3]);
+		Graphics()->QuadsSetRotation(ClientTick);
+		Graphics()->QuadsDraw(
+			new IGraphics::CQuadItem(Pos.x, Pos.y, 50,50),
+			1
+		);
+		
+		Graphics()->SetColor(1.0,1.0,1.0,1.0f);
+		Graphics()->QuadsSetRotation(ClientTick*2);
+		Graphics()->QuadsDraw(
+			new IGraphics::CQuadItem(Pos.x, Pos.y, 25,25),
+			1
+		);
+		Graphics()->QuadsEnd();
+	}
+	
+	Graphics()->BlendNormal();
+}
+
 void CItems::OnRender()
 {
 	if(Client()->State() < IClient::STATE_ONLINE)
@@ -286,6 +390,10 @@ void CItems::OnRender()
 		else if(Item.m_Type == NETOBJTYPE_LASER)
 		{
 			RenderLaser((const CNetObj_Laser *)pData);
+		}
+		else if(Item.m_Type == NETOBJTYPE_BEAM)
+		{
+			RenderBeam((const CNetObj_Beam *)pData);
 		}
 	}
 

@@ -85,6 +85,16 @@ Objects = [
 
 		NetTick("m_StartTick"),
 	]),
+    
+	NetObject("Beam", [
+		NetIntAny("m_X"),
+		NetIntAny("m_Y"),
+		NetIntAny("m_FromX"),
+		NetIntAny("m_FromY"),
+		NetIntAny("m_Owner"),
+
+		NetTick("m_StartTick"),
+	]),
 
 	NetObject("Pickup", [
 		NetIntAny("m_X"),
@@ -147,7 +157,7 @@ Objects = [
 		NetIntRange("m_PlayerFlags", 0, 256),
 		NetIntRange("m_Health", 0, 10),
 		NetIntRange("m_Armor", 0, 10),
-		NetIntRange("m_AmmoCount", 0, 10),
+		NetIntRange("m_AmmoCount", 0, 100),
 		NetIntRange("m_Weapon", 0, 'NUM_WEAPONS-1'),
 		NetIntRange("m_Emote", 0, len(Emotes)),
 		NetIntRange("m_AttackTick", 0, 'max_int'),

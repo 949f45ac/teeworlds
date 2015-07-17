@@ -18,6 +18,7 @@ class CItems : public CComponent
 	void RenderPickup(const CNetObj_Pickup *pPrev, const CNetObj_Pickup *pCurrent);
 	void RenderFlag(const CNetObj_Flag *pPrev, const CNetObj_Flag *pCurrent, const CNetObj_GameData *pPrevGameData, const CNetObj_GameData *pCurGameData);
 	void RenderLaser(const struct CNetObj_Laser *pCurrent);
+	void RenderBeam(const struct CNetObj_Beam *pCurrent);
 
 public:
 	virtual void OnReset();

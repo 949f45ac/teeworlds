@@ -9,6 +9,8 @@
 
 #include <game/gamecore.h>
 
+#include "beam.h"
+
 enum
 {
 	WEAPON_GAME = -3, // team switching etc
@@ -41,6 +43,7 @@ public:
 
 	void HandleWeapons();
 	void HandleNinja();
+	void HandleBeam();
 
 	void OnPredictedInput(CNetObj_PlayerInput *pNewInput);
 	void OnDirectInput(CNetObj_PlayerInput *pNewInput);
@@ -131,6 +134,7 @@ private:
 	CCharacterCore m_SendCore; // core that we should send
 	CCharacterCore m_ReckoningCore; // the dead reckoning core
 
+	CBeam* m_ActiveBeam;
 };
 
 #endif

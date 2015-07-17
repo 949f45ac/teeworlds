@@ -317,7 +317,11 @@ void CPlayers::RenderPlayer(
 
 	// draw gun
 	{
-		Graphics()->TextureSet(g_pData->m_aImages[IMAGE_GAME].m_Id);
+		if (Player.m_Weapon == WEAPON_SHAFT)
+			Graphics()->TextureSet(g_pData->m_aImages[IMAGE_EGAME].m_Id);
+		else
+			Graphics()->TextureSet(g_pData->m_aImages[IMAGE_GAME].m_Id);
+			
 		Graphics()->QuadsBegin();
 		Graphics()->QuadsSetRotation(State.GetAttach()->m_Angle*pi*2+Angle);
 

@@ -7,6 +7,7 @@
 
 #include "character.h"
 #include "laser.h"
+#include "beam.h"
 #include "projectile.h"
 
 //input count
@@ -251,7 +252,7 @@ void CCharacter::FireWeapon()
 	vec2 Direction = normalize(vec2(m_LatestInput.m_TargetX, m_LatestInput.m_TargetY));
 
 	bool FullAuto = false;
-	if(m_ActiveWeapon == WEAPON_GRENADE || m_ActiveWeapon == WEAPON_SHOTGUN || m_ActiveWeapon == WEAPON_RIFLE)
+	if(m_ActiveWeapon == WEAPON_GRENADE || m_ActiveWeapon == WEAPON_SHOTGUN || m_ActiveWeapon == WEAPON_RIFLE || m_ActiveWeapon == WEAPON_SHAFT)
 		FullAuto = true;
 
 
@@ -408,6 +409,15 @@ void CCharacter::FireWeapon()
 			new CLaser(GameWorld(), m_Pos, Direction, GameServer()->Tuning()->m_LaserReach, m_pPlayer->GetCID());
 			GameServer()->CreateSound(m_Pos, SOUND_RIFLE_FIRE);
 		} break;
+        
+		case WEAPON_SHAFT:
+		{
+			if (!m_ActiveBeam) // enable fluent rendering by keeping the same object
+				m_ActiveBeam = new CBeam(GameWorld(), m_Pos, Direction, m_pPlayer->GetCID());
+			else
+				m_ActiveBeam->AdjustPosition(m_Pos, Direction, true);
+			GameServer()->CreateSound(m_Pos, SOUND_SHAFT_FIRE);
+		} break;
 
 		case WEAPON_NINJA:
 		{
@@ -436,6 +446,7 @@ void CCharacter::HandleWeapons()
 {
 	//ninja
 	HandleNinja();
+	HandleBeam();
 
 	// check reload timer
 	if(m_ReloadTimer)
@@ -471,6 +482,24 @@ void CCharacter::HandleWeapons()
 	}
 
 	return;
+}
+
+void CCharacter::HandleBeam()
+{
+	if (!m_ActiveBeam)
+		return;
+		
+	if (!(m_ActiveWeapon == WEAPON_SHAFT && m_aWeapons[WEAPON_SHAFT].m_Ammo && (m_LatestInput.m_Fire&1))) {
+		m_ActiveBeam->Reset();
+		m_ActiveBeam = NULL;
+		return;
+	}
+		
+	m_ActiveBeam->AdjustPosition(
+			m_Pos,
+			normalize(vec2(m_LatestInput.m_TargetX, m_LatestInput.m_TargetY)),
+			false
+	);
 }
 
 bool CCharacter::GiveWeapon(int Weapon, int Ammo)

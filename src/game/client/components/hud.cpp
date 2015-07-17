@@ -367,11 +367,17 @@ void CHud::RenderVoting()
 
 void CHud::RenderCursor()
 {
-	if(!m_pClient->m_Snap.m_pLocalCharacter || Client()->State() == IClient::STATE_DEMOPLAYBACK)
+    const CNetObj_Character *pCharacter = m_pClient->m_Snap.m_pLocalCharacter;
+	if(!pCharacter || Client()->State() == IClient::STATE_DEMOPLAYBACK)
 		return;
 
 	MapscreenToGroup(m_pClient->m_pCamera->m_Center.x, m_pClient->m_pCamera->m_Center.y, Layers()->GameGroup());
-	Graphics()->TextureSet(g_pData->m_aImages[IMAGE_GAME].m_Id);
+    
+	if (pCharacter->m_Weapon == WEAPON_SHAFT)
+		Graphics()->TextureSet(g_pData->m_aImages[IMAGE_EGAME].m_Id);
+	else
+		Graphics()->TextureSet(g_pData->m_aImages[IMAGE_GAME].m_Id);
+	
 	Graphics()->QuadsBegin();
 
 	// render cursor
@@ -400,9 +406,9 @@ void CHud::RenderHealthAndAmmo(const CNetObj_Character *pCharacter)
 
 	// if weaponstage is active, put a "glow" around the stage ammo
 	RenderTools()->SelectSprite(g_pData->m_Weapons.m_aId[pCharacter->m_Weapon%NUM_WEAPONS].m_pSpriteProj);
-	IGraphics::CQuadItem Array[10];
+	IGraphics::CQuadItem Array[100];
 	int i;
-	for (i = 0; i < min(pCharacter->m_AmmoCount, 10); i++)
+	for (i = 0; i < min(pCharacter->m_AmmoCount, 100); i++)
 		Array[i] = IGraphics::CQuadItem(x+i*12,y+24,10,10);
 	Graphics()->QuadsDrawTL(Array, i);
 	Graphics()->QuadsEnd();

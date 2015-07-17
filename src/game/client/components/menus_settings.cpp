@@ -434,6 +434,7 @@ static CKeyInfo gs_aKeys[] =
 	{ "Shotgun", "+weapon3", 0 },
 	{ "Grenade", "+weapon4", 0 },
 	{ "Rifle", "+weapon5", 0 },
+	{ "Shaft", "+weapon6", 0 },
 	{ "Next weapon", "+nextweapon", 0 },
 	{ "Prev. weapon", "+prevweapon", 0 },
 	{ "Vote yes", "vote yes", 0 },
