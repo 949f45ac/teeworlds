@@ -251,9 +251,9 @@ void CCharacter::FireWeapon()
 	DoWeaponSwitch();
 	vec2 Direction = normalize(vec2(m_LatestInput.m_TargetX, m_LatestInput.m_TargetY));
 
-	bool FullAuto = false;
-	if(m_ActiveWeapon == WEAPON_GRENADE || m_ActiveWeapon == WEAPON_SHOTGUN || m_ActiveWeapon == WEAPON_RIFLE || m_ActiveWeapon == WEAPON_SHAFT)
-		FullAuto = true;
+	bool FullAuto = true;
+	if(m_ActiveWeapon == WEAPON_HAMMER || m_ActiveWeapon == WEAPON_NINJA || m_ActiveWeapon == WEAPON_GUN)
+		FullAuto = false;
 
 
 	// check if we gonna fire
@@ -416,7 +416,6 @@ void CCharacter::FireWeapon()
 				m_ActiveBeam = new CBeam(GameWorld(), m_Pos, Direction, m_pPlayer->GetCID());
 			else
 				m_ActiveBeam->AdjustPosition(m_Pos, Direction, true);
-			GameServer()->CreateSound(m_Pos, SOUND_SHAFT_FIRE);
 		} break;
 
 		case WEAPON_NINJA:
@@ -723,6 +722,9 @@ bool CCharacter::IncreaseArmor(int Amount)
 
 void CCharacter::Die(int Killer, int Weapon)
 {
+	if (m_ActiveBeam)
+		m_ActiveBeam->Reset();
+	
 	// we got to wait 0.5 secs before respawning
 	m_pPlayer->m_RespawnTick = Server()->Tick()+Server()->TickSpeed()/2;
 	int ModeSpecial = GameServer()->m_pController->OnCharacterDeath(this, GameServer()->m_apPlayers[Killer], Weapon);

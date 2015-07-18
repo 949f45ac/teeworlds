@@ -10,6 +10,7 @@
 #include <game/client/ui.h>
 #include <game/client/render.h>
 
+#include <game/client/components/controls.h>
 #include <game/client/components/flow.h>
 #include <game/client/components/effects.h>
 
@@ -269,6 +270,7 @@ void CItems::RenderLaser(const struct CNetObj_Laser *pCurrent)
 void CItems::RenderBeam(const struct CNetObj_Beam *current) {
 	vec2 Pos = vec2(current->m_X, current->m_Y);
 	vec2 From = vec2(current->m_FromX, current->m_FromY);
+	//vec2 From = PLAYERS::get_intratick_pos(current->playerID);
 	vec2 Dir = normalize(Pos - From);
 	float dist = length(Pos - From);
 	
@@ -278,7 +280,7 @@ void CItems::RenderBeam(const struct CNetObj_Beam *current) {
 		// get the intersecting position TODO: get this from the /server/character's activesparkle somehow...
 		//pos = (from + normalize(pos-from)*tuning.shaft_range);
 		//col_intersect_line(from, pos, &pos, 0x0);
-		//Pos = m_pClient->m_pControls->m_MousePos;
+		Pos = m_pClient->m_pControls->m_TargetPos;
 		// approximate by length of ray from "unprecise" ray
 		Dir = normalize(Pos - From);
 		Pos = From + (Dir*dist);

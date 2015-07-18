@@ -25,6 +25,8 @@ private:
 	bool m_Cooled;
 	int m_EvalTick;
 	int m_Owner;
+	
+	inline void Intersect();
 };
 
 #endif
