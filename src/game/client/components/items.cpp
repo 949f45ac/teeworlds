@@ -275,11 +275,9 @@ void CItems::RenderBeam(const struct CNetObj_Beam *current) {
 	float dist = length(Pos - From);
 	
 	// beam is from local player? use local (more precise) coords then
+	// we could do this for every weapon, but only for beam it's really damn noticeable
 	if (current->m_Owner == m_pClient->m_Snap.m_LocalClientID) {
 		From = m_pClient->m_LocalCharacterPos;
-		// get the intersecting position TODO: get this from the /server/character's activesparkle somehow...
-		//pos = (from + normalize(pos-from)*tuning.shaft_range);
-		//col_intersect_line(from, pos, &pos, 0x0);
 		Pos = m_pClient->m_pControls->m_TargetPos;
 		// approximate by length of ray from "unprecise" ray
 		Dir = normalize(Pos - From);

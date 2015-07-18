@@ -19,7 +19,7 @@ bool CBeam::HitCharacter(vec2 From, vec2 To)
 {
 	vec2 At;
 	CCharacter *pOwnerChar = GameServer()->GetPlayerChar(m_Owner);
-	CCharacter *pHit = GameServer()->m_World.IntersectCharacter(m_From, To, 5.0f, At, pOwnerChar);
+	CCharacter *pHit = GameServer()->m_World.IntersectCharacter(m_From, To, 0.0f, At, pOwnerChar);
 	if(!pHit)
 		return false;
 
@@ -36,7 +36,7 @@ void CBeam::AdjustPosition(vec2 NewFrom, vec2 NewDir, bool Cooled)
 	m_From = NewFrom;
 	m_Pos = (m_From + NewDir * GameServer()->Tuning()->m_ShaftReach);
 	GameServer()->Collision()->IntersectLine(m_From, m_Pos, &m_Pos, 0x0);
-	GameServer()->m_World.IntersectCharacter(m_From, m_Pos, 5.0f, m_Pos, GameServer()->GetPlayerChar(m_Owner));
+	GameServer()->m_World.IntersectCharacter(m_From, m_Pos, 0.0f, m_Pos, GameServer()->GetPlayerChar(m_Owner));
 }
 
 void CBeam::Reset()
