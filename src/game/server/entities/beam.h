@@ -18,6 +18,7 @@ public:
 
 protected:
 	bool HitCharacter(vec2 From, vec2 To);
+	CCharacter* IntersectCharacter(vec2 To, vec2 At);
 
 private:
 	vec2 m_From;
@@ -25,8 +26,6 @@ private:
 	bool m_Cooled;
 	int m_EvalTick;
 	int m_Owner;
-	
-	inline void Intersect();
 };
 
 #endif
