@@ -95,9 +95,13 @@ void CKillMessages::OnRender()
 
 		// render weapon
 		x -= 44.0f;
-		if (m_aKillmsgs[r].m_Weapon >= 0)
+		int Weapon = m_aKillmsgs[r].m_Weapon;
+		if (Weapon >= 0)
 		{
-			Graphics()->TextureSet(g_pData->m_aImages[IMAGE_GAME].m_Id);
+			Graphics()->TextureSet(g_pData->m_aImages[
+				Weapon == WEAPON_SHAFT ? IMAGE_EGAME : IMAGE_GAME
+			].m_Id);
+			
 			Graphics()->QuadsBegin();
 			RenderTools()->SelectSprite(g_pData->m_Weapons.m_aId[m_aKillmsgs[r].m_Weapon].m_pSpriteBody);
 			RenderTools()->DrawSprite(x, y+28, 96);
