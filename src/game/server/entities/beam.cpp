@@ -53,9 +53,15 @@ void CBeam::Tick()
 {
 	GameServer()->CreateSound(m_From, SOUND_SHAFT_FIRE);
 	GameServer()->CreateSound(m_Pos, SOUND_SHAFT_FIRE);
+	
 	// only lose cooled status if we hit anything
 	// effect = always cause at least 1 damage when glancing a character
-	m_Cooled = m_Cooled && !HitCharacter(m_From, m_Pos);
+	// m_Cooled = m_Cooled && !HitCharacter(m_From, m_Pos);
+	
+	if (m_Cooled) {
+		HitCharacter(m_From, m_Pos);
+		m_Cooled = false;
+	}
 }
 
 void CBeam::TickPaused()
