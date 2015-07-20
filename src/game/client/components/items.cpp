@@ -289,10 +289,10 @@ void CItems::RenderBeam(const struct CNetObj_Beam *current) {
 
 	
 	// render inner beam
-	Graphics()->BlendNormal();		
+	Graphics()->BlendNormal();
 	Graphics()->TextureSet(-1);
 
-	Graphics()->QuadsBegin();		
+	Graphics()->QuadsBegin();
 	// do outline
 	Graphics()->SetColor(1.0,1.0,0.8,1.0f);
 	out = vec2(Dir.y, -Dir.x) * 3;
@@ -304,20 +304,24 @@ void CItems::RenderBeam(const struct CNetObj_Beam *current) {
 		Pos.x+out.x, Pos.y+out.y
 	);		
 	Graphics()->QuadsDrawFreeform(
-			&CFreeformItem,
-			1
-		);
+		&CFreeformItem,
+		1
+	);
 		
 	Graphics()->QuadsEnd();
 
 
 	// render sprites
-	Graphics()->BlendAdditive();		
-	Graphics()->TextureSet(g_pData->m_aImages[IMAGE_EGAME].m_Id);		
 	
-	Graphics()->QuadsBegin();		
+	int ClientTick = Client()->GameTick();
+	int Phase = ClientTick % 3;
+	
+	Graphics()->BlendAdditive();
+	Graphics()->TextureSet(g_pData->m_aImages[IMAGE_EGAME].m_Id);
+	
+	Graphics()->QuadsBegin();
 	RenderTools()->SelectSprite(SPRITE_SHAFT_BEAM1);
-	Graphics()->SetColor(1.0,1.0,0.8,1.0f);
+	Graphics()->SetColor(1.0,1.0,0.8,1.f);
 
 	Graphics()->QuadsSetRotation(GetAngle(Dir));
 
@@ -325,7 +329,7 @@ void CItems::RenderBeam(const struct CNetObj_Beam *current) {
 	float offset = 40;
 	float move = offset - dist/2;
 	
-	int ClientTick = Client()->GameTick();
+	
 	
 	IGraphics::CQuadItem CQuadItem(
 		Pos.x+Dir.x*move,
@@ -336,7 +340,7 @@ void CItems::RenderBeam(const struct CNetObj_Beam *current) {
 	Graphics()->QuadsDraw(
 		&CQuadItem,
 		1
-	);			
+	);
 	Graphics()->QuadsEnd();
 	
 	// render head
@@ -346,18 +350,20 @@ void CItems::RenderBeam(const struct CNetObj_Beam *current) {
 		Graphics()->QuadsBegin();
 
 		Graphics()->SetColor(1.0,1.0,1.0,0.3f);
-		int sprites[] = {SPRITE_SHAFT_END1, SPRITE_SHAFT_END2, SPRITE_SHAFT_END3};
-		RenderTools()->SelectSprite(sprites[ClientTick%3]);
+		
+		// shaft sprites should be adjacent in enum
+		RenderTools()->SelectSprite(SPRITE_SHAFT_END1 + Phase);
+		
 		Graphics()->QuadsSetRotation(ClientTick);
 		Graphics()->QuadsDraw(
-			new IGraphics::CQuadItem(Pos.x, Pos.y, 50,50),
+			new IGraphics::CQuadItem(Pos.x, Pos.y, 50, 50),
 			1
 		);
 		
 		Graphics()->SetColor(1.0,1.0,1.0,1.0f);
 		Graphics()->QuadsSetRotation(ClientTick*2);
 		Graphics()->QuadsDraw(
-			new IGraphics::CQuadItem(Pos.x, Pos.y, 25,25),
+			new IGraphics::CQuadItem(Pos.x, Pos.y, 25, 25),
 			1
 		);
 		Graphics()->QuadsEnd();
