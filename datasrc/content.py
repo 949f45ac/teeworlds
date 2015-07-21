@@ -528,7 +528,7 @@ container.weapons.rifle.base.Set(weapon)
 container.weapons.id.Add(weapon)
 
 weapon = WeaponSpec(container, "shaft")
-weapon.firedelay.Set(70)
+weapon.firedelay.Set(50)
 weapon.maxammo.Set(100)
 weapon.damage.Set(1)
 weapon.visual_size.Set(115)

@@ -44,7 +44,7 @@ MACRO_TUNING_PARAM(LaserBounceCost, laser_bounce_cost, 0)
 MACRO_TUNING_PARAM(LaserDamage, laser_damage, 5)
 
 MACRO_TUNING_PARAM(ShaftDamage, shaft_damage, 1)
-MACRO_TUNING_PARAM(ShaftReach, shaft_reach, 600.0f)
+MACRO_TUNING_PARAM(ShaftReach, shaft_reach, 500.0f)
 
 MACRO_TUNING_PARAM(PlayerCollision, player_collision, 1)
 MACRO_TUNING_PARAM(PlayerHooking, player_hooking, 1)
